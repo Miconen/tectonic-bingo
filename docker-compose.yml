@@ -1,0 +1,41 @@
+version: "3"
+services:
+  tectonic-bingo:
+    container_name: tectonic-bingo
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - .:/app
+    restart: always
+    ports:
+      - 3000:3000
+    networks:
+      - tectonic_network
+  postgres-db:
+    image: postgres:latest
+    container_name: postgres-db
+    restart: always
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - 5432:5432
+    networks:
+      - tectonic_network
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./database.sql:/docker-entrypoint-initdb.d/database.sql
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 5433:8080
+    networks:
+      - tectonic_network
+networks:
+  tectonic_network:
+    external: true
+volumes:
+  tectonic_data:
